@@ -387,10 +387,7 @@ export const restoreElement = (
             elbowed: true,
             startBinding: repairBinding(element, element.startBinding),
             endBinding: repairBinding(element, element.endBinding),
-            fixedSegments:
-              element.fixedSegments?.length && base.points.length >= 4
-                ? element.fixedSegments
-                : null,
+            fixedSegments: element.fixedSegments,
             startIsSpecial: element.startIsSpecial,
             endIsSpecial: element.endIsSpecial,
           })

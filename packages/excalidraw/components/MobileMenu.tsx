@@ -1,5 +1,6 @@
 import React from "react";
 
+import { TOOL_TYPE } from '@excalidraw/common';
 import { showSelectedShapeActions } from "@excalidraw/element";
 
 import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
@@ -8,18 +9,9 @@ import { isHandToolActive } from "../appState";
 import { useTunnels } from "../context/tunnels";
 import { t } from "../i18n";
 import { calculateScrollCenter } from "../scene";
-import { SCROLLBAR_WIDTH, SCROLLBAR_MARGIN } from "../scene/scrollbars";
+import { SCROLLBAR_MARGIN, SCROLLBAR_WIDTH } from "../scene/scrollbars";
 
-import { SelectedShapeActions, ShapesSwitcher } from "./Actions";
-import { FixedSideContainer } from "./FixedSideContainer";
-import { HandButton } from "./HandButton";
-import { HintViewer } from "./HintViewer";
-import { Island } from "./Island";
-import { LockButton } from "./LockButton";
-import { PenModeButton } from "./PenModeButton";
-import { Section } from "./Section";
-import Stack from "./Stack";
-
+import type { JSX } from "react";
 import type { ActionManager } from "../actions/manager";
 import type {
   AppClassProperties,
@@ -29,7 +21,17 @@ import type {
   ExcalidrawProps,
   UIAppState,
 } from "../types";
-import type { JSX } from "react";
+import { SelectedShapeActions, ShapesSwitcher } from "./Actions";
+import { FixedSideContainer } from "./FixedSideContainer";
+import { HandButton } from "./HandButton";
+import { HintViewer } from "./HintViewer";
+import { Island } from "./Island";
+import { LockButton } from "./LockButton";
+import { MarkdownButton } from './MarkdownButton';
+import { MindMapButton } from './MindMapButton';
+import { PenModeButton } from "./PenModeButton";
+import { Section } from "./Section";
+import Stack from "./Stack";
 
 type MobileMenuProps = {
   appState: UIAppState;
@@ -120,6 +122,8 @@ export const MobileMenu = ({
                     title={t("toolBar.hand")}
                     isMobile
                   />
+                  <MarkdownButton title={t('toolBar.markdown')} onClick={() => app.setActiveTool({ type: TOOL_TYPE.embeddable, embeddType: "markdown" })} isMobile />
+                  <MindMapButton title={t('toolBar.mindMap')} onClick={() => app.setActiveTool({ type: TOOL_TYPE.embeddable, embeddType: "mindmap" })} isMobile />
                 </div>
               </Stack.Row>
             </Stack.Col>
