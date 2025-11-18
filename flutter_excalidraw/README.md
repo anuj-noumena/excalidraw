@@ -223,6 +223,61 @@ flutter_excalidraw/
 2. Select a .excalidraw file
 3. Drawing loads into canvas
 
+### Advanced Features
+
+**Text Editing:**
+- Click text tool and click on canvas
+- Opens advanced text editor dialog
+- Supports font selection (Virgil, Helvetica, Cascadia)
+- Font sizes from 12-48px
+- Text color picker
+- Bold, italic, underline formatting
+- Text alignment (left, center, right)
+
+**Lasso Selection:**
+- Select lasso tool
+- Draw freeform selection around elements
+- Automatically selects all enclosed elements
+- Works with complex element arrangements
+
+**Snap Guides:**
+- Automatically enabled when moving elements
+- Shows alignment guides for:
+  - Center-to-center alignment
+  - Edge-to-edge alignment
+  - Equal spacing
+- Purple guide lines appear when aligned
+- Snaps within 8px threshold
+
+**Arrow Binding:**
+- Draw arrows near element edges
+- Arrows automatically bind to shapes
+- Bound arrows move with attached elements
+- Supports gap and focus parameters
+- Visual feedback when binding
+
+**Frames:**
+- Use frame tool to create containers
+- Group elements visually
+- Magic frames for AI-powered organization
+- Named frames for better organization
+- Child elements tracked automatically
+
+**Library:**
+- Save frequently used element groups
+- Create reusable templates
+- Search and sort library items
+- Thumbnails for quick identification
+- Import/export library collections
+
+**Collaboration:**
+- Real-time multiplayer editing
+- WebSocket-based sync
+- See collaborator cursors
+- View other users' selections
+- Conflict resolution for concurrent edits
+- Automatic element synchronization
+
 ## Technical Details
 
 ### Element Types
@@ -286,33 +341,37 @@ Comprehensive geometry utilities:
 - Comprehensive keyboard shortcuts
 - Context menu support
 - Image elements (basic support)
+- **Advanced text editing** with formatting (bold, italic, underline, fonts, sizes, colors)
+- **Lasso selection** for freeform element selection
+- **Snap-to-element guides** for smart alignment
+- **Arrow element binding** to connect arrows to shapes
+- **Frames and magic frames** for grouping and organizing
+- **Library items system** for reusable templates
+- **Real-time collaboration** with WebSocket support
 
 ### Not Yet Implemented ⏳
 
-- Advanced text editing with rich formatting
-- Text containers and bound text
-- Real-time collaboration/multiplayer
-- Library items and templates
-- Frames and magic frames
+- Text containers and bound text (advanced)
 - Embedding external content (iframes, embeddables)
-- Advanced selection (lasso tool)
-- Snap-to-element and smart guides
-- Element binding for arrows
-- Advanced image manipulation
-- Custom fonts
+- Advanced image manipulation (cropping, filters)
+- Custom fonts upload
+- Presentation mode
+- Comments and annotations
+- Version history
+- Cloud storage integration
 
 ## Future Enhancements
 
-1. **Advanced Text Editing** - Rich text editor with containers
-2. **Collaboration** - Real-time multiplayer editing with WebSocket
-3. **Library** - Reusable element library and templates
-4. **Advanced Selection** - Lasso tool for freeform selection
-5. **Smart Guides** - Snap-to-element alignment guides
-6. **Element Binding** - Arrow binding to shapes
-7. **Advanced Image Features** - Cropping, filters, effects
+1. **Text Containers** - Advanced bound text to shapes
+2. **Presentation Mode** - Full-screen presentation with slides
+3. **Comments & Annotations** - Collaborative commenting system
+4. **Version History** - Time-travel through drawing history
+5. **Cloud Storage** - Automatic sync with cloud services
+6. **Advanced Image Features** - Cropping, filters, effects
+7. **Custom Fonts** - Upload and use custom fonts
 8. **Mobile Optimization** - Touch-optimized UI for tablets
-9. **Accessibility** - Screen reader support and keyboard navigation
-10. **Frames** - Container frames and magic frames
+9. **Accessibility** - Screen reader support and WCAG compliance
+10. **Embedding** - iframe and external content support
 
 ## Performance Considerations
 

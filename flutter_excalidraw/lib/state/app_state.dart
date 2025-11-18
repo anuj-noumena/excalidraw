@@ -16,6 +16,9 @@ enum ToolType {
   text,
   eraser,
   hand,
+  lasso,
+  frame,
+  magicframe,
 }
 
 class AppState extends ChangeNotifier {
@@ -789,5 +792,98 @@ class AppState extends ChangeNotifier {
         notifyListeners();
       }
     }
+  }
+
+  // Lasso selection state
+  List<Offset> _lassoPoints = [];
+  List<Offset> get lassoPoints => List.unmodifiable(_lassoPoints);
+
+  void startLasso(Offset point) {
+    _lassoPoints = [point];
+    notifyListeners();
+  }
+
+  void updateLasso(Offset point) {
+    _lassoPoints.add(point);
+    notifyListeners();
+  }
+
+  void finishLasso() {
+    // Lasso selection logic would use lassoPoints to select elements
+    _lassoPoints = [];
+    notifyListeners();
+  }
+
+  // Snap guides state
+  bool _showSnapGuides = true;
+  bool get showSnapGuides => _showSnapGuides;
+
+  void toggleSnapGuides() {
+    _showSnapGuides = !_showSnapGuides;
+    notifyListeners();
+  }
+
+  // Library state
+  bool _showLibrary = false;
+  bool get showLibrary => _showLibrary;
+
+  void toggleLibrary() {
+    _showLibrary = !_showLibrary;
+    notifyListeners();
+  }
+
+  // Collaboration state
+  bool _isCollaborating = false;
+  bool get isCollaborating => _isCollaborating;
+
+  void setCollaborating(bool value) {
+    _isCollaborating = value;
+    notifyListeners();
+  }
+
+  // Create text element with advanced formatting
+  void createTextElement({
+    required Offset position,
+    required String text,
+    double fontSize = 20.0,
+    String fontFamily = 'Virgil',
+    String textAlign = 'left',
+    Color textColor = Colors.black,
+  }) {
+    final id = _uuid.v4();
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final seed = math.Random().nextInt(1000000);
+
+    final element = TextElement(
+      id: id,
+      x: position.dx,
+      y: position.dy,
+      width: 200,
+      height: 50,
+      angle: 0,
+      strokeColor: textColor,
+      backgroundColor: Colors.transparent,
+      fillStyle: FillStyle.solid,
+      strokeWidth: 0,
+      strokeStyle: StrokeStyle.solid,
+      roughness: 0,
+      opacity: _opacity,
+      seed: seed,
+      version: 1,
+      versionNonce: math.Random().nextInt(1000000),
+      index: _generateIndex(),
+      updated: now,
+      text: text,
+      fontSize: fontSize,
+      fontFamily: fontFamily,
+      textAlign: textAlign,
+      verticalAlign: 'top',
+      autoResize: true,
+      lineHeight: 1.25,
+    );
+
+    _elements.add(element);
+    _pushHistory();
+    notifyListeners();
   }
 }

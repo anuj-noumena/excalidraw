@@ -52,6 +52,9 @@ dependencies:
   # UI Components
   flutter_speed_dial: ^7.0.0
 
+  # WebSocket for Collaboration
+  web_socket_channel: ^2.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
