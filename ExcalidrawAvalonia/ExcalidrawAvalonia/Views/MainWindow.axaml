@@ -1,0 +1,111 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:ExcalidrawAvalonia.ViewModels"
+        xmlns:controls="clr-namespace:ExcalidrawAvalonia.Controls"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="ExcalidrawAvalonia.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Excalidraw Avalonia" Width="1200" Height="800"
+        Background="{DynamicResource CanvasBackground}">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Menu and Toolbar -->
+        <Border Grid.Row="0" Background="{DynamicResource ToolbarBackground}" BorderBrush="#cccccc" BorderThickness="0,0,0,1">
+            <StackPanel>
+                <!-- Menu Bar -->
+                <Menu>
+                    <MenuItem Header="_File">
+                        <MenuItem Header="_New" Command="{Binding NewCommand}" InputGesture="Ctrl+N" />
+                        <MenuItem Header="_Open..." Command="{Binding OpenCommand}" InputGesture="Ctrl+O" />
+                        <MenuItem Header="_Save" Command="{Binding SaveCommand}" InputGesture="Ctrl+S" />
+                        <Separator />
+                        <MenuItem Header="Export as _PNG..." Command="{Binding ExportPngCommand}" />
+                        <MenuItem Header="Export as _SVG..." Command="{Binding ExportSvgCommand}" />
+                        <Separator />
+                        <MenuItem Header="E_xit" Click="OnExit" />
+                    </MenuItem>
+                    <MenuItem Header="_Edit">
+                        <MenuItem Header="_Undo" Command="{Binding UndoCommand}" InputGesture="Ctrl+Z" />
+                        <MenuItem Header="_Redo" Command="{Binding RedoCommand}" InputGesture="Ctrl+Y" />
+                        <Separator />
+                        <MenuItem Header="_Clear Canvas" Command="{Binding ClearCanvasCommand}" />
+                    </MenuItem>
+                    <MenuItem Header="_Help">
+                        <MenuItem Header="_About" Click="OnAbout" />
+                    </MenuItem>
+                </Menu>
+
+                <!-- Toolbar -->
+                <StackPanel Orientation="Horizontal" Margin="10,5">
+                    <!-- Tools -->
+                    <Border BorderBrush="#dddddd" BorderThickness="1" CornerRadius="4" Padding="5" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <ToggleButton Content="✋" Width="40" Height="40" ToolTip.Tip="Hand (H)"
+                                          IsChecked="{Binding CurrentTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Hand}" />
+                            <ToggleButton Content="▭" Width="40" Height="40" ToolTip.Tip="Rectangle (R)"
+                                          IsChecked="{Binding CurrentTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Rectangle}" />
+                            <ToggleButton Content="◇" Width="40" Height="40" ToolTip.Tip="Diamond (D)"
+                                          IsChecked="{Binding CurrentTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Diamond}" />
+                            <ToggleButton Content="○" Width="40" Height="40" ToolTip.Tip="Ellipse (E)"
+                                          IsChecked="{Binding CurrentTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Ellipse}" />
+                            <ToggleButton Content="→" Width="40" Height="40" ToolTip.Tip="Arrow (A)"
+                                          IsChecked="{Binding CurrentTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Arrow}" />
+                            <ToggleButton Content="─" Width="40" Height="40" ToolTip.Tip="Line (L)"
+                                          IsChecked="{Binding CurrentTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Line}" />
+                            <ToggleButton Content="✏" Width="40" Height="40" ToolTip.Tip="FreeDraw (P)"
+                                          IsChecked="{Binding CurrentTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=FreeDraw}" />
+                            <ToggleButton Content="T" Width="40" Height="40" ToolTip.Tip="Text (T)"
+                                          IsChecked="{Binding CurrentTool, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Text}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Properties -->
+                    <Border BorderBrush="#dddddd" BorderThickness="1" CornerRadius="4" Padding="5" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <StackPanel>
+                                <TextBlock Text="Stroke" FontSize="10" Margin="0,0,0,2" />
+                                <TextBox Width="70" Text="{Binding StrokeColor}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Fill" FontSize="10" Margin="0,0,0,2" />
+                                <TextBox Width="70" Text="{Binding BackgroundColor}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Width" FontSize="10" Margin="0,0,0,2" />
+                                <NumericUpDown Width="60" Value="{Binding StrokeWidth}" Minimum="0.5" Maximum="20" Increment="0.5" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Opacity" FontSize="10" Margin="0,0,0,2" />
+                                <NumericUpDown Width="60" Value="{Binding Opacity}" Minimum="0" Maximum="1" Increment="0.1" FormatString="F1" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Roughness" FontSize="10" Margin="0,0,0,2" />
+                                <NumericUpDown Width="60" Value="{Binding Roughness}" Minimum="0" Maximum="2" Increment="0.1" FormatString="F1" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Canvas Area -->
+        <controls:DrawingCanvas Grid.Row="1" Name="DrawingCanvas" />
+
+        <!-- Status Bar -->
+        <Border Grid.Row="2" Background="{DynamicResource ToolbarBackground}" BorderBrush="#cccccc" BorderThickness="0,1,0,0" Padding="10,5">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Grid.Column="0" Text="{Binding StatusText}" VerticalAlignment="Center" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="{Binding Scene.NonDeletedElements.Length, StringFormat='Elements: {0}'}" />
+                    <TextBlock Text="{Binding AppState.Zoom, StringFormat='Zoom: {0:P0}'}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

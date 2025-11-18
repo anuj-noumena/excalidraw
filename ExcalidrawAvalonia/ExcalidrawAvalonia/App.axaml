@@ -1,0 +1,17 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ExcalidrawAvalonia.App"
+             RequestedThemeVariant="Default">
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+    </Application.Styles>
+
+    <Application.Resources>
+        <!-- Color palette -->
+        <Color x:Key="PrimaryColor">#6965db</Color>
+        <Color x:Key="SecondaryColor">#5e5ce6</Color>
+        <Color x:Key="CanvasBackground">#ffffff</Color>
+        <Color x:Key="ToolbarBackground">#f5f5f5</Color>
+    </Application.Resources>
+</Application>
