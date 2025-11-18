@@ -34,10 +34,23 @@ A complete Flutter port of [Excalidraw](https://excalidraw.com) - a virtual whit
 - 🎯 **Selection** - Select and manipulate elements
 - ↩️ **Undo/Redo** - Full history support (50 steps)
 - 🗑️ **Delete** - Remove selected elements
+- 🔄 **Element Rotation** - Rotate elements with rotation handles
+- 📋 **Copy/Paste/Cut** - Full clipboard support
+- 📑 **Duplicate** - Quickly duplicate selected elements
 
-### File Management
+### Advanced Features
+- 🗂️ **Grouping** - Group and ungroup elements (Ctrl+G / Ctrl+Shift+G)
+- 🔒 **Lock/Unlock** - Lock elements to prevent modification (Ctrl+L)
+- 📚 **Layer Control** - Bring to front, send to back, and layer reordering
+- ⌨️ **Keyboard Shortcuts** - Comprehensive keyboard shortcut system
+- 🖱️ **Context Menu** - Right-click context menu with common operations
+- 🖼️ **Image Support** - Insert and manipulate images (basic support)
+
+### File Management & Export
 - 💾 **Save** - Export to .excalidraw format
 - 📂 **Load** - Import .excalidraw files
+- 🖼️ **PNG Export** - Export drawings as PNG images
+- 📄 **SVG Export** - Export drawings as scalable SVG files
 - 🔄 **Full Compatibility** - Compatible with original Excalidraw files
 
 ## Architecture
@@ -142,6 +155,7 @@ flutter_excalidraw/
 
 ### Keyboard Shortcuts
 
+#### Tool Selection
 | Key | Action |
 |-----|--------|
 | `V` | Selection tool |
@@ -154,9 +168,49 @@ flutter_excalidraw/
 | `P` | Pen (freehand) |
 | `T` | Text |
 | `E` | Eraser |
-| `Delete` | Delete selected |
+
+#### Editing
+| Key | Action |
+|-----|--------|
+| `Delete` or `Backspace` | Delete selected |
+| `Escape` | Clear selection |
 | `Ctrl+Z` | Undo |
-| `Ctrl+Y` | Redo |
+| `Ctrl+Y` or `Ctrl+Shift+Z` | Redo |
+
+#### Clipboard
+| Key | Action |
+|-----|--------|
+| `Ctrl+C` | Copy selected |
+| `Ctrl+X` | Cut selected |
+| `Ctrl+V` | Paste |
+| `Ctrl+D` | Duplicate selected |
+
+#### Selection
+| Key | Action |
+|-----|--------|
+| `Ctrl+A` | Select all |
+
+#### Grouping & Locking
+| Key | Action |
+|-----|--------|
+| `Ctrl+G` | Group selected |
+| `Ctrl+Shift+G` | Ungroup selected |
+| `Ctrl+L` | Lock/Unlock selected |
+
+#### Layer Ordering
+| Key | Action |
+|-----|--------|
+| `Ctrl+]` | Bring forward |
+| `Ctrl+[` | Send backward |
+| `Ctrl+Shift+]` | Bring to front |
+| `Ctrl+Shift+[` | Send to back |
+
+#### Zoom
+| Key | Action |
+|-----|--------|
+| `Ctrl++` or `Ctrl+=` | Zoom in |
+| `Ctrl+-` | Zoom out |
+| `Ctrl+0` | Reset zoom to 100% |
 
 ### File Operations
 
@@ -214,46 +268,51 @@ Comprehensive geometry utilities:
 
 ### Implemented Features ✅
 
-- All basic drawing tools
-- Hand-drawn rendering style
-- Fill patterns and stroke styles
-- Customizable appearance
-- Zoom and pan
-- Undo/redo
+- All basic drawing tools (rectangle, diamond, ellipse, arrow, line, freehand, text)
+- Hand-drawn rendering style with configurable roughness
+- Fill patterns (hachure, cross-hatch, solid, zigzag) and stroke styles
+- Customizable appearance (colors, stroke width, opacity)
+- Zoom and pan with keyboard shortcuts
+- Undo/redo with 50-step history
 - File export/import (.excalidraw format)
-- Selection system
+- PNG and SVG export
+- Selection system with multi-select
 - Grid view
+- Element rotation with rotation state management
+- Copy/paste/cut/duplicate operations
+- Grouping and ungrouping elements
+- Layer ordering (bring to front, send to back, etc.)
+- Lock/unlock elements
+- Comprehensive keyboard shortcuts
+- Context menu support
+- Image elements (basic support)
 
 ### Not Yet Implemented ⏳
 
-- Advanced text editing and containers
-- Image elements
-- Collaboration/multiplayer
+- Advanced text editing with rich formatting
+- Text containers and bound text
+- Real-time collaboration/multiplayer
 - Library items and templates
 - Frames and magic frames
-- Embedding external content
-- SVG/PNG export
-- Keyboard shortcuts (partially implemented)
-- Context menus
-- Element rotation handles
-- Advanced selection (lasso, multi-select)
-- Group/ungroup elements
-- Lock/unlock elements
-- Layer ordering controls
-- Snap-to-element features
+- Embedding external content (iframes, embeddables)
+- Advanced selection (lasso tool)
+- Snap-to-element and smart guides
+- Element binding for arrows
+- Advanced image manipulation
+- Custom fonts
 
 ## Future Enhancements
 
-1. **Text Editing** - Full text editor with formatting
-2. **Image Support** - Insert and manipulate images
-3. **Export Options** - PNG, SVG export
-4. **Collaboration** - Real-time multiplayer editing
-5. **Library** - Reusable element library
-6. **Advanced Selection** - Lasso tool, multi-select
-7. **Element Manipulation** - Rotation, grouping, layering
-8. **Keyboard Shortcuts** - Full keyboard support
-9. **Mobile Optimization** - Touch-optimized UI
-10. **Accessibility** - Screen reader support
+1. **Advanced Text Editing** - Rich text editor with containers
+2. **Collaboration** - Real-time multiplayer editing with WebSocket
+3. **Library** - Reusable element library and templates
+4. **Advanced Selection** - Lasso tool for freeform selection
+5. **Smart Guides** - Snap-to-element alignment guides
+6. **Element Binding** - Arrow binding to shapes
+7. **Advanced Image Features** - Cropping, filters, effects
+8. **Mobile Optimization** - Touch-optimized UI for tablets
+9. **Accessibility** - Screen reader support and keyboard navigation
+10. **Frames** - Container frames and magic frames
 
 ## Performance Considerations
 

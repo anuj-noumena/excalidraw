@@ -73,6 +73,18 @@ class AppState extends ChangeNotifier {
   final List<List<ExcalidrawElement>> _history = [];
   int _historyIndex = -1;
 
+  // Clipboard
+  List<ExcalidrawElement> _clipboard = [];
+
+  // Groups
+  final Map<String, List<String>> _groups = {}; // groupId -> list of element ids
+  int _groupCounter = 0;
+
+  // Rotation state
+  String? _rotatingElementId;
+  String? get rotatingElementId => _rotatingElementId;
+  double _rotationStartAngle = 0;
+
   final _uuid = const Uuid();
 
   // Add element
@@ -498,5 +510,284 @@ class AppState extends ChangeNotifier {
     _elements.addAll(elements);
     _pushHistory();
     notifyListeners();
+  }
+
+  // Select all
+  void selectAll() {
+    _selectedElementIds.clear();
+    _selectedElementIds.addAll(_elements.map((e) => e.id));
+    notifyListeners();
+  }
+
+  // Group selected elements
+  void groupSelectedElements() {
+    if (_selectedElementIds.length < 2) return;
+
+    final groupId = 'group_${_groupCounter++}';
+    _groups[groupId] = _selectedElementIds.toList();
+
+    // Add group ID to all selected elements
+    for (final id in _selectedElementIds) {
+      final index = _elements.indexWhere((e) => e.id == id);
+      if (index != -1) {
+        final element = _elements[index];
+        final newGroupIds = [...element.groupIds, groupId];
+        _elements[index] = element.copyWith(groupIds: newGroupIds);
+      }
+    }
+
+    _pushHistory();
+    notifyListeners();
+  }
+
+  // Ungroup selected elements
+  void ungroupSelectedElements() {
+    if (_selectedElementIds.isEmpty) return;
+
+    // Find all groups that selected elements belong to
+    final groupsToRemove = <String>{};
+    for (final id in _selectedElementIds) {
+      final element = _elements.firstWhere((e) => e.id == id);
+      groupsToRemove.addAll(element.groupIds);
+    }
+
+    // Remove group IDs from all elements in those groups
+    for (final groupId in groupsToRemove) {
+      final elementIds = _groups[groupId] ?? [];
+      for (final id in elementIds) {
+        final index = _elements.indexWhere((e) => e.id == id);
+        if (index != -1) {
+          final element = _elements[index];
+          final newGroupIds = element.groupIds.where((g) => g != groupId).toList();
+          _elements[index] = element.copyWith(groupIds: newGroupIds);
+        }
+      }
+      _groups.remove(groupId);
+    }
+
+    _pushHistory();
+    notifyListeners();
+  }
+
+  // Duplicate selected elements
+  void duplicateSelectedElements() {
+    if (_selectedElementIds.isEmpty) return;
+
+    final newElements = <ExcalidrawElement>[];
+    final newSelectedIds = <String>{};
+
+    for (final id in _selectedElementIds) {
+      final element = _elements.firstWhere((e) => e.id == id);
+      final newId = _uuid.v4();
+      final offset = 20.0;
+
+      final newElement = element.copyWith(
+        id: newId,
+        x: element.x + offset,
+        y: element.y + offset,
+        version: 1,
+        versionNonce: math.Random().nextInt(1000000),
+        index: _generateIndex(),
+        updated: DateTime.now().millisecondsSinceEpoch,
+      );
+
+      newElements.add(newElement);
+      newSelectedIds.add(newId);
+    }
+
+    _elements.addAll(newElements);
+    _selectedElementIds.clear();
+    _selectedElementIds.addAll(newSelectedIds);
+
+    _pushHistory();
+    notifyListeners();
+  }
+
+  // Copy selected elements
+  void copySelectedElements() {
+    if (_selectedElementIds.isEmpty) return;
+
+    _clipboard = _elements
+        .where((e) => _selectedElementIds.contains(e.id))
+        .toList();
+  }
+
+  // Cut selected elements
+  void cutSelectedElements() {
+    copySelectedElements();
+    deleteSelectedElements();
+  }
+
+  // Paste elements
+  void pasteElements() {
+    if (_clipboard.isEmpty) return;
+
+    final newElements = <ExcalidrawElement>[];
+    final newSelectedIds = <String>{};
+    final offset = 20.0;
+
+    for (final element in _clipboard) {
+      final newId = _uuid.v4();
+      final newElement = element.copyWith(
+        id: newId,
+        x: element.x + offset,
+        y: element.y + offset,
+        version: 1,
+        versionNonce: math.Random().nextInt(1000000),
+        index: _generateIndex(),
+        updated: DateTime.now().millisecondsSinceEpoch,
+      );
+
+      newElements.add(newElement);
+      newSelectedIds.add(newId);
+    }
+
+    _elements.addAll(newElements);
+    _selectedElementIds.clear();
+    _selectedElementIds.addAll(newSelectedIds);
+
+    _pushHistory();
+    notifyListeners();
+  }
+
+  // Layer ordering - bring forward
+  void bringForward() {
+    if (_selectedElementIds.isEmpty) return;
+
+    for (final id in _selectedElementIds) {
+      final index = _elements.indexWhere((e) => e.id == id);
+      if (index != -1 && index < _elements.length - 1) {
+        final element = _elements.removeAt(index);
+        _elements.insert(index + 1, element);
+      }
+    }
+
+    _pushHistory();
+    notifyListeners();
+  }
+
+  // Layer ordering - send backward
+  void sendBackward() {
+    if (_selectedElementIds.isEmpty) return;
+
+    for (final id in _selectedElementIds) {
+      final index = _elements.indexWhere((e) => e.id == id);
+      if (index > 0) {
+        final element = _elements.removeAt(index);
+        _elements.insert(index - 1, element);
+      }
+    }
+
+    _pushHistory();
+    notifyListeners();
+  }
+
+  // Layer ordering - bring to front
+  void bringToFront() {
+    if (_selectedElementIds.isEmpty) return;
+
+    final selectedElements = _elements
+        .where((e) => _selectedElementIds.contains(e.id))
+        .toList();
+
+    _elements.removeWhere((e) => _selectedElementIds.contains(e.id));
+    _elements.addAll(selectedElements);
+
+    _pushHistory();
+    notifyListeners();
+  }
+
+  // Layer ordering - send to back
+  void sendToBack() {
+    if (_selectedElementIds.isEmpty) return;
+
+    final selectedElements = _elements
+        .where((e) => _selectedElementIds.contains(e.id))
+        .toList();
+
+    _elements.removeWhere((e) => _selectedElementIds.contains(e.id));
+    _elements.insertAll(0, selectedElements);
+
+    _pushHistory();
+    notifyListeners();
+  }
+
+  // Toggle lock on selected elements
+  void toggleLockSelectedElements() {
+    if (_selectedElementIds.isEmpty) return;
+
+    for (final id in _selectedElementIds) {
+      final index = _elements.indexWhere((e) => e.id == id);
+      if (index != -1) {
+        final element = _elements[index];
+        _elements[index] = element.copyWith(locked: !element.locked);
+      }
+    }
+
+    _pushHistory();
+    notifyListeners();
+  }
+
+  // Start rotation
+  void startRotation(String elementId, double angle) {
+    _rotatingElementId = elementId;
+    _rotationStartAngle = angle;
+    notifyListeners();
+  }
+
+  // Update rotation
+  void updateRotation(double angle) {
+    if (_rotatingElementId == null) return;
+
+    final index = _elements.indexWhere((e) => e.id == _rotatingElementId);
+    if (index != -1) {
+      final element = _elements[index];
+      _elements[index] = element.copyWith(angle: angle);
+      notifyListeners();
+    }
+  }
+
+  // Finish rotation
+  void finishRotation() {
+    _rotatingElementId = null;
+    _pushHistory();
+    notifyListeners();
+  }
+
+  // Move selected elements
+  void moveSelectedElements(Offset delta) {
+    if (_selectedElementIds.isEmpty) return;
+
+    for (final id in _selectedElementIds) {
+      final index = _elements.indexWhere((e) => e.id == id);
+      if (index != -1) {
+        final element = _elements[index];
+        if (!element.locked) {
+          _elements[index] = element.copyWith(
+            x: element.x + delta.dx,
+            y: element.y + delta.dy,
+          );
+        }
+      }
+    }
+
+    notifyListeners();
+  }
+
+  // Resize element
+  void resizeElement(String id, double x, double y, double width, double height) {
+    final index = _elements.indexWhere((e) => e.id == id);
+    if (index != -1) {
+      final element = _elements[index];
+      if (!element.locked) {
+        _elements[index] = element.copyWith(
+          x: x,
+          y: y,
+          width: width,
+          height: height,
+        );
+        notifyListeners();
+      }
+    }
   }
 }

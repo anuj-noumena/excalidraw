@@ -1016,3 +1016,146 @@ class TextElement extends ExcalidrawElement {
     };
   }
 }
+
+// Image Element
+class ImageElement extends ExcalidrawElement {
+  final String? fileId;
+  final String? dataUrl;
+  final double scale;
+
+  const ImageElement({
+    required super.id,
+    required super.x,
+    required super.y,
+    required super.width,
+    required super.height,
+    required super.angle,
+    required super.strokeColor,
+    required super.backgroundColor,
+    required super.fillStyle,
+    required super.strokeWidth,
+    required super.strokeStyle,
+    super.roundness,
+    required super.roughness,
+    required super.opacity,
+    required super.seed,
+    required super.version,
+    required super.versionNonce,
+    required super.index,
+    super.isDeleted,
+    super.groupIds,
+    super.frameId,
+    super.boundElements,
+    required super.updated,
+    super.link,
+    super.locked,
+    super.customData,
+    this.fileId,
+    this.dataUrl,
+    this.scale = 1.0,
+  });
+
+  @override
+  ElementType get type => ElementType.image;
+
+  @override
+  ImageElement copyWith({
+    String? id,
+    double? x,
+    double? y,
+    double? width,
+    double? height,
+    double? angle,
+    Color? strokeColor,
+    Color? backgroundColor,
+    FillStyle? fillStyle,
+    double? strokeWidth,
+    StrokeStyle? strokeStyle,
+    Roundness? roundness,
+    double? roughness,
+    int? opacity,
+    int? seed,
+    int? version,
+    int? versionNonce,
+    FractionalIndex? index,
+    bool? isDeleted,
+    List<String>? groupIds,
+    String? frameId,
+    List<BoundElement>? boundElements,
+    int? updated,
+    String? link,
+    bool? locked,
+    Map<String, dynamic>? customData,
+    String? fileId,
+    String? dataUrl,
+    double? scale,
+  }) {
+    return ImageElement(
+      id: id ?? this.id,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      angle: angle ?? this.angle,
+      strokeColor: strokeColor ?? this.strokeColor,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      fillStyle: fillStyle ?? this.fillStyle,
+      strokeWidth: strokeWidth ?? this.strokeWidth,
+      strokeStyle: strokeStyle ?? this.strokeStyle,
+      roundness: roundness ?? this.roundness,
+      roughness: roughness ?? this.roughness,
+      opacity: opacity ?? this.opacity,
+      seed: seed ?? this.seed,
+      version: version ?? this.version,
+      versionNonce: versionNonce ?? this.versionNonce,
+      index: index ?? this.index,
+      isDeleted: isDeleted ?? this.isDeleted,
+      groupIds: groupIds ?? this.groupIds,
+      frameId: frameId ?? this.frameId,
+      boundElements: boundElements ?? this.boundElements,
+      updated: updated ?? this.updated,
+      link: link ?? this.link,
+      locked: locked ?? this.locked,
+      customData: customData ?? this.customData,
+      fileId: fileId ?? this.fileId,
+      dataUrl: dataUrl ?? this.dataUrl,
+      scale: scale ?? this.scale,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type': 'image',
+      'id': id,
+      'x': x,
+      'y': y,
+      'width': width,
+      'height': height,
+      'angle': angle,
+      'strokeColor': '#${strokeColor.value.toRadixString(16).padLeft(8, '0')}',
+      'backgroundColor': '#${backgroundColor.value.toRadixString(16).padLeft(8, '0')}',
+      'fillStyle': fillStyle.name,
+      'strokeWidth': strokeWidth,
+      'strokeStyle': strokeStyle.name,
+      if (roundness != null) 'roundness': roundness!.toJson(),
+      'roughness': roughness,
+      'opacity': opacity,
+      'seed': seed,
+      'version': version,
+      'versionNonce': versionNonce,
+      'isDeleted': isDeleted,
+      'groupIds': groupIds,
+      if (frameId != null) 'frameId': frameId,
+      if (boundElements != null)
+        'boundElements': boundElements!.map((e) => e.toJson()).toList(),
+      'updated': updated,
+      if (link != null) 'link': link,
+      'locked': locked,
+      if (customData != null) 'customData': customData,
+      if (fileId != null) 'fileId': fileId,
+      if (dataUrl != null) 'dataUrl': dataUrl,
+      'scale': scale,
+    };
+  }
+}

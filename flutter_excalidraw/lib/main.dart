@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'state/app_state.dart';
 import 'widgets/excalidraw_canvas.dart';
 import 'widgets/toolbar.dart';
+import 'widgets/keyboard_shortcuts.dart';
 import 'utils/file_manager.dart';
+import 'utils/export_utils.dart';
 
 void main() {
   runApp(const ExcalidrawApp());
@@ -34,39 +36,68 @@ class ExcalidrawScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter Excalidraw'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.folder_open),
-            tooltip: 'Open file',
-            onPressed: () => _loadFile(context),
-          ),
-          IconButton(
-            icon: const Icon(Icons.save),
-            tooltip: 'Save file',
-            onPressed: () => _saveFile(context),
-          ),
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            tooltip: 'About',
-            onPressed: () => _showAboutDialog(context),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          const Toolbar(),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
-              ),
-              child: const ExcalidrawCanvas(),
+    return KeyboardShortcuts(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Flutter Excalidraw'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.folder_open),
+              tooltip: 'Open file',
+              onPressed: () => _loadFile(context),
             ),
-          ),
-        ],
+            IconButton(
+              icon: const Icon(Icons.save),
+              tooltip: 'Save file',
+              onPressed: () => _saveFile(context),
+            ),
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.file_download),
+              tooltip: 'Export',
+              onSelected: (value) => _handleExport(context, value),
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'png',
+                  child: Row(
+                    children: [
+                      Icon(Icons.image, size: 18),
+                      SizedBox(width: 8),
+                      Text('Export as PNG'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'svg',
+                  child: Row(
+                    children: [
+                      Icon(Icons.code, size: 18),
+                      SizedBox(width: 8),
+                      Text('Export as SVG'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            IconButton(
+              icon: const Icon(Icons.info_outline),
+              tooltip: 'About',
+              onPressed: () => _showAboutDialog(context),
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            const Toolbar(),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: const ExcalidrawCanvas(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -117,6 +148,38 @@ class ExcalidrawScreen extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to save file: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleExport(BuildContext context, String format) async {
+    try {
+      final appState = Provider.of<AppState>(context, listen: false);
+      final fileName = 'excalidraw_${DateTime.now().millisecondsSinceEpoch}';
+
+      String? filePath;
+      if (format == 'png') {
+        filePath = await ExportUtils.savePNGToFile(appState.elements, fileName);
+      } else if (format == 'svg') {
+        filePath = await ExportUtils.saveSVGToFile(appState.elements, fileName);
+      }
+
+      if (context.mounted && filePath != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Exported to ${format.toUpperCase()}: $filePath'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to export: $e'),
             backgroundColor: Colors.red,
           ),
         );
