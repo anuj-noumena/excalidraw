@@ -1,0 +1,67 @@
+name: flutter_excalidraw
+description: A complete Flutter port of Excalidraw - a virtual whiteboard for sketching hand-drawn diagrams
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  provider: ^6.1.1
+
+  # Math and Geometry
+  vector_math: ^2.1.4
+
+  # File Handling
+  file_picker: ^6.1.1
+  path_provider: ^2.1.1
+
+  # Image Handling
+  image: ^4.1.3
+
+  # JSON and Serialization
+  json_annotation: ^4.8.1
+
+  # Unique IDs
+  uuid: ^4.2.1
+
+  # HTTP and File Downloads
+  http: ^1.1.2
+
+  # SVG Support
+  flutter_svg: ^2.0.9
+  path_drawing: ^1.0.1
+
+  # Color Utilities
+  flutter_colorpicker: ^1.0.3
+
+  # Compression
+  archive: ^3.4.9
+
+  # Local Storage
+  shared_preferences: ^2.2.2
+
+  # Clipboard
+  flutter_clipboard_manager: ^0.0.4
+  clipboard: ^0.1.3
+
+  # UI Components
+  flutter_speed_dial: ^7.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.7
+  json_serializable: ^6.7.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/fonts/
+    - assets/images/
